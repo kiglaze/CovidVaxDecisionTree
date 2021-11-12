@@ -34,13 +34,22 @@ def import_data():
 	# re.fullmatch('\\d+', '13 days 00:00:00')
 	# int(re.findall('^\\d+|$', '13 days 00:00:00')[0])
 	# int(re.findall('^\\d+|$', subset_data["Day"])[0])
+	subset_data['Day_int'] = subset_data['Day'].transform(transform_days_data)
+	subset_data = subset_data.loc[subset_data["State"] != "Total"]
+	subset_data_time_cross_section = subset_data.loc[subset_data["Day_int"] == 622]
+	# subset_data_time_cross_section.shape[0] gives # states represented
 	return subset_data
+
+
+def transform_days_data(days_string):
+	return days_string.days
 
 
 # Driver code
 def main():
 	# Building Phase
 	data = import_data()
+	print(data.head())
 
 	
 # Calling main function
