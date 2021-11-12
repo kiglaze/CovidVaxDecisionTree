@@ -84,3 +84,9 @@ def main():
 # Calling main function
 if __name__=="__main__":
 	main()
+
+# Suspected issue: Y has a ton of different values, rather than being categorized.
+# Number of values in value array is large because of the number of demonstrated values for Y.
+# All the 1's you see actually add up to the number of samples.
+# Possible fix: Need to make Y have fewer possible values.
+# Perhaps standardization and splitting into thirds afterwards (0-.33, .33-.66, .66-1).
