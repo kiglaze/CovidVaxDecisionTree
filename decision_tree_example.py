@@ -15,6 +15,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
+from sklearn import tree
+import matplotlib.pyplot as plt
 
 
 # Function importing Dataset
@@ -54,6 +56,13 @@ def train_using_gini(X_train, X_test, y_train):
 
     # Performing training
     clf_gini.fit(X_train, y_train)
+
+    # plot tree. custom addition.
+    plt.figure()  # set plot size (denoted in inches)
+    tree.plot_tree(clf_gini, fontsize=7)
+    plt.show()
+    #plt.savefig('img.png')
+
     return clf_gini
 
 
