@@ -11,10 +11,12 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
+from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 import re
+import matplotlib.pyplot as plt
 
 # Function importing Dataset
 def import_data():
@@ -25,33 +27,60 @@ def import_data():
 		print(col)
 	subset_data = imported_data[["State", "Sentiment", "Day", "Dist_Per_100K", "Admin_Per_100K", "new_case_per_100K", "cum_tot_cases_per_100K"]]
 
-	# Printing the dataset shape
-	print("Dataset Length: ", len(subset_data))
-	print("Dataset Shape: ", subset_data.shape)
-
-	# Printing the dataset obseravtions
-	print("Dataset: ", subset_data.head())
-	# re.fullmatch('\\d+', '13 days 00:00:00')
-	# int(re.findall('^\\d+|$', '13 days 00:00:00')[0])
+	# Dataset obseravtions
 	# int(re.findall('^\\d+|$', subset_data["Day"])[0])
-	subset_data['Day_int'] = subset_data['Day'].transform(transform_days_data)
+	# subset_data['Day'] = subset_data['Day'].transform(transform_days_data)
 	subset_data = subset_data.loc[subset_data["State"] != "Total"]
-	subset_data_time_cross_section = subset_data.loc[subset_data["Day_int"] == 622]
+	subset_data = subset_data.loc[subset_data["State"] != "District of Columbia"]
+	subset_data_time_cross_section = subset_data.loc[622 == subset_data['Day'].transform(transform_days_data)]
 	# subset_data_time_cross_section.shape[0] gives # states represented
-	return subset_data
+	result = subset_data_time_cross_section[["Admin_Per_100K", "Sentiment", "cum_tot_cases_per_100K"]]
+	return result
 
 
 def transform_days_data(days_string):
 	return days_string.days
 
 
+# Function to split the dataset
+def splitdataset(balance_data):
+	# Separating the target variable
+	# X = balance_data.values[:, 0:2]
+	#X = balance_data[["Sentiment", "cum_tot_cases_per_100K"]]
+	X = balance_data.values[:, 1:3]
+	# Y = balance_data.values[:, 4]
+	Y = balance_data.values[:, 0]
+
+	# Splitting the dataset into train and test
+	X_train, X_test, y_train, y_test = train_test_split(
+		X, Y, test_size=0.3, random_state=100)
+
+	return X, Y, X_train, X_test, y_train, y_test
+
+
+# Function to perform training with giniIndex.
+def train_using_gini(X_train, Y_train):
+	# Creating the classifier object
+	#clf = DecisionTreeClassifier(max_depth=4)
+	clf = DecisionTreeClassifier(criterion="gini", random_state=100, max_depth=3, min_samples_leaf=5)
+
+	# Performing training
+	clf = clf.fit(X_train, Y_train)
+	tree.plot_tree(clf)
+	plt.show()
+	return clf
+
+
 # Driver code
 def main():
 	# Building Phase
 	data = import_data()
-	print(data.head())
+	X, Y, X_train, X_test, y_train, y_test = splitdataset(data)
 
-	
+	clf = train_using_gini(X_train, y_train)
+	print("end")
+
+
 # Calling main function
 if __name__=="__main__":
 	main()
