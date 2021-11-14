@@ -17,6 +17,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 import re
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
 
 # Function importing Dataset
 def import_data():
@@ -33,8 +34,26 @@ def import_data():
 	subset_data = subset_data.loc[subset_data["State"] != "Total"]
 	subset_data = subset_data.loc[subset_data["State"] != "District of Columbia"]
 	subset_data_time_cross_section = subset_data.loc[622 == subset_data['Day'].transform(transform_days_data)]
+	standardized_y = StandardScaler().fit_transform(subset_data_time_cross_section[['Admin_Per_100K']])
+	standardized_y_arr = []
+	y_category_arr = []
+	index = 0
+	for val in standardized_y:
+		standardized_val = standardized_y[index][0]
+		standardized_y_arr.append(standardized_val)
+		category = None
+		if(standardized_val >= 0):
+			category = 'H'
+		else:
+			category = 'L'
+		y_category_arr.append(category)
+		index = index + 1
+
+	subset_data_time_cross_section.insert(0, "standardized_y", standardized_y_arr, True)
+	subset_data_time_cross_section.insert(0, "y_category", y_category_arr, True)
+
 	# subset_data_time_cross_section.shape[0] gives # states represented
-	result = subset_data_time_cross_section[["Admin_Per_100K", "Sentiment", "cum_tot_cases_per_100K"]]
+	result = subset_data_time_cross_section[["y_category", "Sentiment", "cum_tot_cases_per_100K"]]
 	return result
 
 
