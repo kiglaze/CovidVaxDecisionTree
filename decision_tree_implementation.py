@@ -87,10 +87,13 @@ def train_using_gini(X_train, Y_train):
 	clf = clf.fit(X_train, Y_train)
 
 	plt.figure(figsize=(10,10), dpi=100)
-	tree.plot_tree(clf, fontsize=10, feature_names=["Sentiment", "cum_tot_cases_per_100K"])
+	tree.plot_tree(clf, fontsize=10, feature_names=["Sentiment", "cum_tot_cases_per_100K"], class_names=["H", "L"])
+	tree.export_graphviz(clf, out_file="tree.dot", feature_names=["Sentiment", "cum_tot_cases_per_100K"], class_names=["H", "L"], filled=True)
 	plt.show()
 	return clf
 # /Users/irisglaze/Documents/CSC522/decision_tree_implementation/venv/bin/python decision_tree_implementation.py
+# run to get decision tree image: dot -Tpng -Gdpi=300 tree.dot -o tree.png
+# must install graphviz first to run in Mac
 
 # Driver code
 def main():
