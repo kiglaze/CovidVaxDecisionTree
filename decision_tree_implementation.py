@@ -81,14 +81,16 @@ def splitdataset(balance_data):
 def train_using_gini(X_train, Y_train):
 	# Creating the classifier object
 	#clf = DecisionTreeClassifier(max_depth=4)
-	clf = DecisionTreeClassifier(criterion="gini", random_state=100, max_depth=3, min_samples_leaf=5)
+	clf = DecisionTreeClassifier(criterion="gini", random_state=100, max_depth=4, min_samples_leaf=5)
 
 	# Performing training
 	clf = clf.fit(X_train, Y_train)
-	tree.plot_tree(clf)
+
+	plt.figure(figsize=(10,10), dpi=100)
+	tree.plot_tree(clf, fontsize=10, feature_names=["Sentiment", "cum_tot_cases_per_100K"])
 	plt.show()
 	return clf
-
+# /Users/irisglaze/Documents/CSC522/decision_tree_implementation/venv/bin/python decision_tree_implementation.py
 
 # Driver code
 def main():
