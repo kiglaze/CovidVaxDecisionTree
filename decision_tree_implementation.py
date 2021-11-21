@@ -98,6 +98,26 @@ def train_using_gini(X_train, Y_train, featuresArray):
 	# feature_names=["Sentiment", "% Bachelor's", "Families Median Income"]
 	plt.show()
 	return clf
+
+
+# Function to make predictions
+def prediction(X_test, clf_object):
+	# Predicton on test with giniIndex
+	y_pred = clf_object.predict(X_test)
+	print("Predicted values:")
+	print(y_pred)
+	return y_pred
+
+
+# Function to calculate accuracy
+def cal_accuracy(y_test, y_pred):
+	print("Confusion Matrix: ", confusion_matrix(y_test, y_pred))
+
+	print("Accuracy : ", accuracy_score(y_test, y_pred) * 100)
+
+	print("Report : ", classification_report(y_test, y_pred))
+
+
 # /Users/irisglaze/Documents/CSC522/decision_tree_implementation/venv/bin/python decision_tree_implementation.py
 # run to get decision tree image: dot -Tpng -Gdpi=300 tree.dot -o tree.png
 # must install graphviz first to run in Mac
@@ -110,6 +130,13 @@ def main():
 	X, Y, X_train, X_test, y_train, y_test = splitdataset(data, featuresArray)
 
 	clf = train_using_gini(X_train, y_train, featuresArray)
+	# Operational Phase
+	print("Results Using Gini Index:")
+
+	# Prediction using gini
+	y_pred_gini = prediction(X_test, clf)
+	cal_accuracy(y_test, y_pred_gini)
+
 	print("end")
 
 
