@@ -1,17 +1,17 @@
 digraph Tree {
 node [shape=box, style="filled", color="black", fontname="helvetica"] ;
 edge [fontname="helvetica"] ;
-0 [label="% Bachelor's <= 0.242\ngini = 0.467\nsamples = 35\nvalue = [13, 22]\nclass = L", fillcolor="#aed7f4"] ;
-1 [label="% Bachelor's <= 0.227\ngini = 0.211\nsamples = 25\nvalue = [3, 22]\nclass = L", fillcolor="#54aae9"] ;
+0 [label="% Bachelor's <= 0.242\ngini = 0.467\nentropy = 0.952\nsamples = 35\nvalue = [13, 22]\nclass = L", fillcolor="#aed7f4"] ;
+1 [label="% Bachelor's <= 0.227\ngini = 0.211\nentropy = 0.529\nsamples = 25\nvalue = [3, 22]\nclass = L", fillcolor="#54aae9"] ;
 0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label="Families Median Income <= 65638.0\ngini = 0.095\nsamples = 20\nvalue = [1, 19]\nclass = L", fillcolor="#43a2e6"] ;
+2 [label="Families Median Income <= 65638.0\ngini = 0.095\nentropy = 0.286\nsamples = 20\nvalue = [1, 19]\nclass = L", fillcolor="#43a2e6"] ;
 1 -> 2 [headlabel="True"];
-3 [label="gini = 0.32\nsamples = 5\nvalue = [1, 4]\nclass = L", fillcolor="#6ab6ec"] ;
+3 [label="gini = 0.32\nentropy = 0.722\nsamples = 5\nvalue = [1, 4]\nclass = L", fillcolor="#6ab6ec"] ;
 2 -> 3 [headlabel="True"];
-4 [label="gini = 0.0\nsamples = 15\nvalue = [0, 15]\nclass = L", fillcolor="#399de5"] ;
+4 [label="gini = 0.0\nentropy = 0.0\nsamples = 15\nvalue = [0, 15]\nclass = L", fillcolor="#399de5"] ;
 2 -> 4 [headlabel="False"];
-5 [label="gini = 0.48\nsamples = 5\nvalue = [2, 3]\nclass = L", fillcolor="#bddef6"] ;
+5 [label="gini = 0.48\nentropy = 0.971\nsamples = 5\nvalue = [2, 3]\nclass = L", fillcolor="#bddef6"] ;
 1 -> 5 [headlabel="False"];
-6 [label="gini = 0.0\nsamples = 10\nvalue = [10, 0]\nclass = H", fillcolor="#e58139"] ;
+6 [label="gini = 0.0\nentropy = 0.0\nsamples = 10\nvalue = [10, 0]\nclass = H", fillcolor="#e58139"] ;
 0 -> 6 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
 }
