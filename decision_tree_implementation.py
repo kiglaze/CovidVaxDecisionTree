@@ -101,14 +101,20 @@ def train_using_gini(X_train, Y_train, featuresArray):
 
 
 # Function to perform training with entropy.
-def train_using_entropy(X_train, y_train):
+def train_using_entropy(X_train, y_train, featuresArray):
 	# Decision tree with entropy
-	clf_entropy = DecisionTreeClassifier(
-		criterion="entropy", random_state=100,
-		max_depth=3, min_samples_leaf=5)
+	clf_entropy = DecisionTreeClassifier(criterion="entropy", random_state=100, max_depth=6, min_samples_leaf=5)
 
 	# Performing training
 	clf_entropy.fit(X_train, y_train)
+
+	plt.figure(figsize=(10,10), dpi=100)
+	tree.plot_tree(clf_entropy, fontsize=10, feature_names=featuresArray, class_names=["H", "L"])
+	tree.export_graphviz(clf_entropy, out_file="tree_entropy.dot", feature_names=featuresArray, class_names=["H", "L"], filled=True)
+	# , feature_names=["Sentiment", "cum_tot_cases_per_100K", "bachelor_pct"]
+	# feature_names=["Sentiment", "% Bachelor's", "Families Median Income"]
+	plt.show()
+
 	return clf_entropy
 
 
@@ -132,6 +138,7 @@ def cal_accuracy(y_test, y_pred):
 
 # /Users/irisglaze/Documents/CSC522/decision_tree_implementation/venv/bin/python decision_tree_implementation.py
 # run to get decision tree image: dot -Tpng -Gdpi=300 tree.dot -o tree.png
+# dot -Tpng -Gdpi=300 tree_entropy.dot -o tree_entropy.png
 # must install graphviz first to run in Mac
 
 # Driver code
@@ -142,7 +149,7 @@ def main():
 	X, Y, X_train, X_test, y_train, y_test = splitdataset(data, featuresArray)
 
 	clf_gini = train_using_gini(X_train, y_train, featuresArray)
-	clf_entropy = train_using_entropy(X_train, y_train)
+	clf_entropy = train_using_entropy(X_train, y_train, featuresArray)
 
 	# Operational Phase
 	print("Results Using Gini Index:")
