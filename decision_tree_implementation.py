@@ -67,11 +67,11 @@ def transform_days_data(days_string):
 
 
 # Function to split the dataset
-def splitdataset(balance_data):
+def splitdataset(balance_data, featuresArray):
 	# Separating the target variable
 	# X = balance_data.values[:, 0:2]
 	#X = balance_data[["Sentiment", "cum_tot_cases_per_100K"]]
-	X = balance_data.values[:, 1:4]
+	X = balance_data.values[:, 1:(len(featuresArray)+1)]
 	# Y = balance_data.values[:, 4]
 	Y = balance_data.values[:, 0]
 
@@ -83,7 +83,7 @@ def splitdataset(balance_data):
 
 
 # Function to perform training with giniIndex.
-def train_using_gini(X_train, Y_train):
+def train_using_gini(X_train, Y_train, featuresArray):
 	# Creating the classifier object
 	#clf = DecisionTreeClassifier(max_depth=4)
 	clf = DecisionTreeClassifier(criterion="gini", random_state=100, max_depth=6, min_samples_leaf=5)
@@ -92,8 +92,8 @@ def train_using_gini(X_train, Y_train):
 	clf = clf.fit(X_train, Y_train)
 
 	plt.figure(figsize=(10,10), dpi=100)
-	tree.plot_tree(clf, fontsize=10, feature_names=["% Bachelor's", "Families Median Income", "Sentiment"], class_names=["H", "L"])
-	tree.export_graphviz(clf, out_file="tree.dot", feature_names=["% Bachelor's", "Families Median Income", "Sentiment"], class_names=["H", "L"], filled=True)
+	tree.plot_tree(clf, fontsize=10, feature_names=featuresArray, class_names=["H", "L"])
+	tree.export_graphviz(clf, out_file="tree.dot", feature_names=featuresArray, class_names=["H", "L"], filled=True)
 	# , feature_names=["Sentiment", "cum_tot_cases_per_100K", "bachelor_pct"]
 	# feature_names=["Sentiment", "% Bachelor's", "Families Median Income"]
 	plt.show()
@@ -106,9 +106,10 @@ def train_using_gini(X_train, Y_train):
 def main():
 	# Building Phase
 	data = import_data()
-	X, Y, X_train, X_test, y_train, y_test = splitdataset(data)
+	featuresArray = ["% Bachelor's", "Families Median Income"];
+	X, Y, X_train, X_test, y_train, y_test = splitdataset(data, featuresArray)
 
-	clf = train_using_gini(X_train, y_train)
+	clf = train_using_gini(X_train, y_train, featuresArray)
 	print("end")
 
 
