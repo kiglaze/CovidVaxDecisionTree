@@ -19,6 +19,8 @@ import re
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
+# Series_Complete_Pop_Pct, ['Sentiment'],['Age'],['Education'],['Income']
+
 # Function importing Dataset
 def import_data():
 	imported_data = pd.read_pickle("./all_agg_df.pkl")
@@ -26,14 +28,16 @@ def import_data():
 	# Prints all available column names for use in imported data.
 	for col in imported_data.columns:
 		print(col)
-	subset_data = imported_data[["State", "Sentiment", "Day", "Dist_Per_100K", "Admin_Per_100K", "new_case_per_100K", "cum_tot_cases_per_100K"]]
+	subset_data = imported_data[["State", "Sentiment", "Families-Median income (dollars)", "Total-AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher", "Total-AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!Bachelor's degree or higher", "SEX AND AGE!!Total population", "Series_Complete_Pop_Pct", "Day", "Date", "Dist_Per_100K", "Admin_Per_100K", "new_case_per_100K", "cum_tot_cases_per_100K"]]
 
 	# Dataset obseravtions
 	# int(re.findall('^\\d+|$', subset_data["Day"])[0])
 	# subset_data['Day'] = subset_data['Day'].transform(transform_days_data)
 	subset_data = subset_data.loc[subset_data["State"] != "Total"]
 	subset_data = subset_data.loc[subset_data["State"] != "District of Columbia"]
-	subset_data_time_cross_section = subset_data.loc[622 == subset_data['Day'].transform(transform_days_data)]
+	bachelor_pct = (subset_data["Total-AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher"] + subset_data["Total-AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!Bachelor's degree or higher"]) / subset_data["SEX AND AGE!!Total population"]
+	subset_data.insert(0, "bachelor_pct", bachelor_pct, True)
+	subset_data_time_cross_section = subset_data.loc[622 == subset_data['Day'].transform(transform_days_data)] # Jan 2020
 	standardized_y = StandardScaler().fit_transform(subset_data_time_cross_section[['Admin_Per_100K']])
 	standardized_y_arr = []
 	y_category_arr = []
@@ -53,7 +57,8 @@ def import_data():
 	subset_data_time_cross_section.insert(0, "y_category", y_category_arr, True)
 
 	# subset_data_time_cross_section.shape[0] gives # states represented
-	result = subset_data_time_cross_section[["y_category", "Sentiment", "cum_tot_cases_per_100K"]]
+	result = subset_data_time_cross_section[["y_category", "bachelor_pct", "Families-Median income (dollars)", "Sentiment"]]
+	# 	result = subset_data_time_cross_section[["y_category", "bachelor_pct", "Families-Median income (dollars)", "Sentiment"]]
 	return result
 
 
@@ -66,7 +71,7 @@ def splitdataset(balance_data):
 	# Separating the target variable
 	# X = balance_data.values[:, 0:2]
 	#X = balance_data[["Sentiment", "cum_tot_cases_per_100K"]]
-	X = balance_data.values[:, 1:3]
+	X = balance_data.values[:, 1:4]
 	# Y = balance_data.values[:, 4]
 	Y = balance_data.values[:, 0]
 
@@ -81,14 +86,16 @@ def splitdataset(balance_data):
 def train_using_gini(X_train, Y_train):
 	# Creating the classifier object
 	#clf = DecisionTreeClassifier(max_depth=4)
-	clf = DecisionTreeClassifier(criterion="gini", random_state=100, max_depth=4, min_samples_leaf=5)
+	clf = DecisionTreeClassifier(criterion="gini", random_state=100, max_depth=6, min_samples_leaf=5)
 
 	# Performing training
 	clf = clf.fit(X_train, Y_train)
 
 	plt.figure(figsize=(10,10), dpi=100)
-	tree.plot_tree(clf, fontsize=10, feature_names=["Sentiment", "cum_tot_cases_per_100K"], class_names=["H", "L"])
-	tree.export_graphviz(clf, out_file="tree.dot", feature_names=["Sentiment", "cum_tot_cases_per_100K"], class_names=["H", "L"], filled=True)
+	tree.plot_tree(clf, fontsize=10, feature_names=["% Bachelor's", "Families Median Income", "Sentiment"], class_names=["H", "L"])
+	tree.export_graphviz(clf, out_file="tree.dot", feature_names=["% Bachelor's", "Families Median Income", "Sentiment"], class_names=["H", "L"], filled=True)
+	# , feature_names=["Sentiment", "cum_tot_cases_per_100K", "bachelor_pct"]
+	# feature_names=["Sentiment", "% Bachelor's", "Families Median Income"]
 	plt.show()
 	return clf
 # /Users/irisglaze/Documents/CSC522/decision_tree_implementation/venv/bin/python decision_tree_implementation.py
