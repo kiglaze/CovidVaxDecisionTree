@@ -100,6 +100,18 @@ def train_using_gini(X_train, Y_train, featuresArray):
 	return clf
 
 
+# Function to perform training with entropy.
+def train_using_entropy(X_train, y_train):
+	# Decision tree with entropy
+	clf_entropy = DecisionTreeClassifier(
+		criterion="entropy", random_state=100,
+		max_depth=3, min_samples_leaf=5)
+
+	# Performing training
+	clf_entropy.fit(X_train, y_train)
+	return clf_entropy
+
+
 # Function to make predictions
 def prediction(X_test, clf_object):
 	# Predicton on test with giniIndex
@@ -129,13 +141,22 @@ def main():
 	featuresArray = ["% Bachelor's", "Families Median Income"];
 	X, Y, X_train, X_test, y_train, y_test = splitdataset(data, featuresArray)
 
-	clf = train_using_gini(X_train, y_train, featuresArray)
+	clf_gini = train_using_gini(X_train, y_train, featuresArray)
+	clf_entropy = train_using_entropy(X_train, y_train)
+
 	# Operational Phase
 	print("Results Using Gini Index:")
 
 	# Prediction using gini
-	y_pred_gini = prediction(X_test, clf)
+	y_pred_gini = prediction(X_test, clf_gini)
 	cal_accuracy(y_test, y_pred_gini)
+
+	# Operational Phase
+	print("Results Using Entropy:")
+
+	# Prediction using Entropy
+	y_pred_entropy = prediction(X_test, clf_entropy)
+	cal_accuracy(y_test, y_pred_entropy)
 
 	print("end")
 
